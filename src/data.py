@@ -1,9 +1,44 @@
 
 import pandas as pd
+import numpy as np
+
+
+def load_timeseries01_original():
+  return pd.read_csv('../data/us-dollar-vs-brazilian-real-rate.csv', header=0, names=['date', 'rate'])
+
+
+def load_timeseries01_daily():
+  df_original = load_timeseries01_original()
+  df = df_original.copy()
+
+  df['date'] = pd.to_datetime(df['date'])
+  df = df.set_index('date')
+
+  idx = pd.date_range('01-02-1995', '09-21-2018')
+  df = df.reindex(idx, fill_value=0)
+  df = df.replace(0, np.nan)
+  df = df.replace('.', np.nan)
+  df = df.fillna(method='ffill')
+
+  df.rate = pd.to_numeric(df.rate)
+
+  df = df['1999-09-21':]
+  return df
+
+
+def load_timeseries01_monthly():
+  df = load_timeseries01_daily()
+  df = df.resample('M')
+  df = df.mean()
+  return df
+
+
+def load_timeseries02_original():
+  return pd.read_csv('../data/fundo01-cotas-rendafixa.csv', header=0, encoding='iso-8859-1')
 
 
 def load_timeseries02():
-  df_original = pd.read_csv('../data/fundo01-cotas-rendafixa.csv', header=0, encoding='iso-8859-1')
+  df_original = load_timeseries02_original()
 
   # remove as colunas desnecessarias
   df2 = df_original.drop('Código', axis=1)

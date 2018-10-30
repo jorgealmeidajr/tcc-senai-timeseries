@@ -87,11 +87,15 @@ def evaluate_models(dataset, arima_params):
 
 
 def print_dataframe_info(df):
-  print(str(df.info()) + '\n')
+  #print(str(df.info()) + '\n')
   print('SHAPE: ' + str(df.shape) + '\n')
   print('DTYPES: ' + str(df.dtypes) + '\n')
-  print('#' * 100)
-  print(str(df.head(5)) + '\n')
-  print('#' * 100)
+  
+  print('#' * 90)
+  print('HEAD \n')
+  print(str(df.head(5)) + '\n\n')
+  
+  print('#' * 90)
+  print('TAIL \n')
   print(str(df.tail(5)))
 
