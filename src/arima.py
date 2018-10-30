@@ -77,11 +77,21 @@ def evaluate_models(dataset, arima_params):
       if mse < best_score:
         best_score, best_cfg = mse, params
         
-      print('ARIMA%s MSE=%f' % (params, mse))
+      print('ARIMA%s MSE=%.9f' % (params, mse))
 
     except:
       print("Configuracao instavel: ", str(params), ", Error: ", sys.exc_info()[0])
       continue
 
-  print('Best ARIMA%s MSE=%f' % (best_cfg, best_score))
+  print('Best ARIMA%s MSE=%.9f' % (best_cfg, best_score))
+
+
+def print_dataframe_info(df):
+  print(str(df.info()) + '\n')
+  print('SHAPE: ' + str(df.shape) + '\n')
+  print('DTYPES: ' + str(df.dtypes) + '\n')
+  print('#' * 100)
+  print(str(df.head(5)) + '\n')
+  print('#' * 100)
+  print(str(df.tail(5)))
 
