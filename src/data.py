@@ -1,10 +1,44 @@
 
+import re
 import pandas as pd
 import numpy as np
 
 
 def load_timeseries01_original():
   return pd.read_csv('../data/us-dollar-vs-brazilian-real-rate.csv', header=0, names=['date', 'rate'])
+
+
+def load_timeseries01_missing_data():
+  file = open('../data/us-dollar-to-real-rate-20181104.html', 'r') 
+
+  result = []
+  valor: str = ''
+  data: str = ''
+
+  for line in file.readlines():    
+    line = line.strip()
+    
+    m = re.search(r'1\s+USD\s+=\s+(\d+.*)\s+BRL', line)
+    if m:
+      #print(line)
+      #print('Match found: ', m.group(1))
+      valor = m.group(1)
+      continue
+        
+    m = re.search(r'USD\s+BRL\s+rate\s+for\s+(\d+/\d+/\d+)', line)
+    if m:
+      data = m.group(1)
+      
+      if data == '21/09/2018':
+        break
+
+      result.append({'date': data, 'rate': valor})
+      valor = ''
+      data = ''
+      
+      continue
+
+  return result
 
 
 def load_timeseries01_daily():
