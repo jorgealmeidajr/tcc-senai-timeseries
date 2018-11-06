@@ -3,6 +3,8 @@ import pandas as pd
 import numpy as np
 
 
+
+
 # Serie Temporal 01
 # cotacao do dolar em relacao ao real - 18 anos
 def load_timeseries01_original():
@@ -45,48 +47,46 @@ def load_timeseries01_monthly():
 
 
 
+
 # Serie Temporal 02
 # Cotacao do Fundo de Investimento de Renda Fixa - ? anos
 def load_timeseries02_original():
   return pd.read_csv('../data/fundo01-cotas-rendafixa.csv', header=0, encoding='iso-8859-1')
 
 
-def load_timeseries02():
+def load_timeseries02_daily():
   df_original = load_timeseries02_original()
 
   # remove as colunas desnecessarias
-  df2 = df_original.drop('Código', axis=1)
-  df2 = df2.drop('Fundo', axis=1)
-  df2 = df2.drop('Variação', axis=1)
-  df2 = df2.drop('Captação', axis=1)
-  df2 = df2.drop('Resgate', axis=1)
-  df2 = df2.drop('PL', axis=1)
-  df2 = df2.drop('Cotistas', axis=1)
+  # axis=1 diz que estou removendo colunas
+  df_daily = df_original.drop('Código', axis=1)
+  df_daily = df_daily.drop('Fundo', axis=1)
+  df_daily = df_daily.drop('Variação', axis=1)
+  df_daily = df_daily.drop('Captação', axis=1)
+  df_daily = df_daily.drop('Resgate', axis=1)
+  df_daily = df_daily.drop('PL', axis=1)
+  df_daily = df_daily.drop('Cotistas', axis=1)
 
-  df2['Data'] = pd.to_datetime(df2['Data'], format='%d/%m/%Y')
-  df2.index = df2['Data']
-  del df2['Data']
+  df_daily['Data'] = pd.to_datetime(df_daily['Data'], format='%d/%m/%Y')
+  df_daily.index = df_daily['Data']
+  del df_daily['Data']
 
-  df2['Cota'] = df2['Cota'].apply(lambda x: float(x.replace(',', '.')))
-  df2['Cota'] = df2['Cota'].astype(float)
+  df_daily['Cota'] = df_daily['Cota'].apply(lambda x: float(x.replace(',', '.')))
+  df_daily['Cota'] = df_daily['Cota'].astype(float)
 
-  return df2
+  df_daily = df_daily.resample('D').ffill()
 
+  if df_daily.isnull().values.any():
+    raise Exception('o dataframe diario nao pode ter valores NaN')
 
-def load_timeseries02_daily():
-  df = load_timeseries02()
-
-  # esse comando jah executa o sort da serie temporal
-  df_daily = df.resample('D').ffill()
+  # estou trabalhando com dados de 7 anos
+  df_daily = df_daily['2011-09-27':]
 
   return df_daily
 
 
 def load_timeseries02_monthly():
-  df = load_timeseries02()
-
-  # esse comando jah executa o sort da serie temporal
-  df_daily = df.resample('D').ffill()
+  df_daily = load_timeseries02_daily()
 
   df_monthly = df_daily.resample('M')
   df_monthly = df_monthly.mean()

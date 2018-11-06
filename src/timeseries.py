@@ -89,3 +89,13 @@ def print_test_results(dfresults):
     else:
         print('p-value (%f) < 0.05' % (p_value))
 
+
+from typing import TypeVar
+
+PandasDataFrame = TypeVar('pandas.core.frame.DataFrame')
+
+def plot_timeserie(df: PandasDataFrame):
+    df.plot(figsize=(15, 12), linewidth=2, fontsize=14)
+    plt.grid(True)
+    plt.xlabel('Ano', fontsize=14)
+
