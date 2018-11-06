@@ -5,6 +5,7 @@ import numpy as np
 
 
 
+
 # Serie Temporal 01
 # cotacao do dolar em relacao ao real - 18 anos
 def load_timeseries01_original():
@@ -48,8 +49,9 @@ def load_timeseries01_monthly():
 
 
 
+
 # Serie Temporal 02
-# Cotacao do Fundo de Investimento de Renda Fixa - ? anos
+# Cotacao do Fundo de Investimento de Renda Fixa - 7 anos
 def load_timeseries02_original():
   return pd.read_csv('../data/fundo01-cotas-rendafixa.csv', header=0, encoding='iso-8859-1')
 
@@ -87,6 +89,54 @@ def load_timeseries02_daily():
 
 def load_timeseries02_monthly():
   df_daily = load_timeseries02_daily()
+
+  df_monthly = df_daily.resample('M')
+  df_monthly = df_monthly.mean()
+
+  return df_monthly
+
+
+
+
+
+# Serie Temporal 03
+# Cotacao do Fundo de Investimento de Acoes - 3 anos
+def load_timeseries03_original():
+  return pd.read_csv('../data/fundo02-cotas-acoes.csv', header=0, encoding='iso-8859-1')
+
+
+def load_timeseries03_daily():
+  df_original = load_timeseries03_original()
+
+  # axis=1 diz que estou removendo colunas
+  df_daily = df_original.drop('Código', axis=1)
+  df_daily = df_daily.drop('Fundo', axis=1)
+  df_daily = df_daily.drop('Variação', axis=1)
+  df_daily = df_daily.drop('Captação', axis=1)
+  df_daily = df_daily.drop('Resgate', axis=1)
+  df_daily = df_daily.drop('PL', axis=1)
+  df_daily = df_daily.drop('Cotistas', axis=1)
+
+  df_daily['Data'] = pd.to_datetime(df_daily['Data'], format='%d/%m/%Y')
+  df_daily.index = df_daily['Data']
+  del df_daily['Data']
+
+  df_daily['Cota'] = df_daily['Cota'].apply(lambda x: float(x.replace(',', '.')))
+  df_daily['Cota'] = df_daily['Cota'].astype(float)
+
+  df_daily = df_daily.resample('D').ffill()
+
+  if df_daily.isnull().values.any():
+    raise Exception('o dataframe diario nao pode ter valores NaN')
+
+  # estou trabalhando com dados de 3 anos
+  df_daily = df_daily['2015-09-27':]
+
+  return df_daily
+
+
+def load_timeseries03_monthly():
+  df_daily = load_timeseries03_daily()
 
   df_monthly = df_daily.resample('M')
   df_monthly = df_monthly.mean()
