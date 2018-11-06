@@ -3,36 +3,50 @@ import pandas as pd
 import numpy as np
 
 
+# Serie Temporal 01
+# cotacao do dolar em relacao ao real - 18 anos
 def load_timeseries01_original():
-  return pd.read_csv('../data/us-dollar-vs-brazilian-real-rate.csv', header=0, names=['date', 'rate'])
+  return pd.read_csv('../output/timeseries01.csv', header=0, names=['date', 'rate'])
 
 
 def load_timeseries01_daily():
   df_original = load_timeseries01_original()
-  df = df_original.copy()
 
-  df['date'] = pd.to_datetime(df['date'])
-  df = df.set_index('date')
+  df_daily = df_original.copy()
+  df_daily['date'] = pd.to_datetime(df_daily['date'])
+  df_daily = df_daily.set_index('date')
 
-  idx = pd.date_range('01-02-1995', '09-21-2018')
-  df = df.reindex(idx, fill_value=0)
-  df = df.replace(0, np.nan)
-  df = df.replace('.', np.nan)
-  df = df.fillna(method='ffill')
+  #idx = pd.date_range('01-02-1995', '09-21-2018')
+  #df = df.reindex(idx, fill_value=0)
+  df_daily = df_daily.resample('D').ffill()
 
-  df.rate = pd.to_numeric(df.rate)
+  df_daily = df_daily.replace(0, np.nan)
+  df_daily = df_daily.replace('.', np.nan)
 
-  df = df['1999-09-21':]
-  return df
+  df_daily = df_daily.fillna(method='ffill')
+
+  df_daily['rate'] = pd.to_numeric(df_daily['rate'])
+
+  # removo o periodo inicial da serie temporal
+  # tem um padrao que nao se repete
+  # estou trabalhando com dados de 18 anos
+  df_daily = df_daily['2000-11-03':]
+
+  return df_daily
 
 
 def load_timeseries01_monthly():
-  df = load_timeseries01_daily()
-  df = df.resample('M')
-  df = df.mean()
-  return df
+  df_daily = load_timeseries01_daily()
+
+  df_monthly = df_daily.resample('M')
+  df_monthly = df_monthly.mean()
+
+  return df_monthly
 
 
+
+# Serie Temporal 02
+# Cotacao do Fundo de Investimento de Renda Fixa - ? anos
 def load_timeseries02_original():
   return pd.read_csv('../data/fundo01-cotas-rendafixa.csv', header=0, encoding='iso-8859-1')
 
