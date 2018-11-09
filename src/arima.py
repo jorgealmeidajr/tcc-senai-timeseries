@@ -43,7 +43,7 @@ def evaluate_arima_model(train, test, arima_order):
 
   for t in range(len(test)):
     model = ARIMA(history, order=arima_order)
-    model_fit = model.fit(disp=0)
+    model_fit = model.fit(disp=0) # -1, 0
     
     output = model_fit.forecast()
     yhat = output[0]
@@ -53,13 +53,7 @@ def evaluate_arima_model(train, test, arima_order):
     #print('predicted=%f, expected=%f' % (yhat, obs))
 
   # calculate out of sample error
-  error = 0
-  try:
-    error = mean_squared_error(test, predictions)
-  except:
-    print('Erro ao calcular MSE, predictions: ', predictions)
-    raise
-
+  error = mean_squared_error(test, predictions)
   return error
 
 
@@ -80,7 +74,7 @@ def evaluate_models(dataset, arima_params):
       print('ARIMA%s MSE=%.9f' % (params, mse))
 
     except:
-      print("Configuracao instavel: ", str(params), ", Error: ", sys.exc_info()[0])
+      #print("Configuracao instavel: ", str(params), ", Error: ", sys.exc_info()[0])
       continue
 
   print('Best ARIMA%s MSE=%.9f' % (best_cfg, best_score))
