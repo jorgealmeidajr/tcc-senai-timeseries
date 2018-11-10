@@ -1,5 +1,10 @@
 
 import sys
+import time
+import os
+
+import pandas as pd
+import numpy as np
 
 from statsmodels.tsa.arima_model import ARIMA
 from sklearn.metrics import mean_squared_error
@@ -18,19 +23,15 @@ def get_arima_params(p_values, d_values, q_values):
 
 
 def split_dataset(dataset, porcentagem, debug=False):
-  if debug:
-    print('Parameter \'dataset\' length: ', len(dataset))
-
   train_size = int(len(dataset) * porcentagem)
   
-  if debug:
-    print('Variable \'train_size\' value: ', train_size)
-
   train, test = dataset[0:train_size], dataset[train_size:]
 
   if debug:
+    print('Parameter \'dataset\' length: ', len(dataset))
     print('Dataset \'train\' length: ', len(train))
     print('Dataset \'test\' length: ', len(test))
+  
   return (train, test)
 
 
@@ -58,26 +59,47 @@ def evaluate_arima_model(train, test, arima_order):
 
 
 # avalia combinacoes de (p, d, q) para o modelo ARIMA
-def evaluate_models(dataset, arima_params):
-  dataset = dataset.astype('float32')
+def evaluate_models(train, test, arima_params, output):
   best_score, best_cfg = float("inf"), None
   
-  train, test = split_dataset(dataset, porcentagem=0.66, debug=True)
+  desempenho = []
 
   for params in arima_params:
     try:
+      # benchmarking
+      t0= time.clock()
+
       mse = evaluate_arima_model(train, test, params)
-      
+
+      t1 = time.clock() - t0      
+      execution_time = t1 - t0 # CPU seconds elapsed (floating point)
+
       if mse < best_score:
         best_score, best_cfg = mse, params
-        
-      print('ARIMA%s MSE=%.9f' % (params, mse))
+      
+      desempenho.append({'params': params, 'MSE': mse, 'time': execution_time})
+      #print('ARIMA%s MSE=%.9f' % (params, mse))
 
     except:
       #print("Configuracao instavel: ", str(params), ", Error: ", sys.exc_info()[0])
       continue
 
-  print('Best ARIMA%s MSE=%.9f' % (best_cfg, best_score))
+  df_desempenho = pd.DataFrame(desempenho, columns=['params', 'MSE', 'time'])
+  path = get_abs_file_path(output)
+  print(path)
+  #df_desempenho.to_csv(path)
+
+  best_arima = df_desempenho.loc[df_desempenho['MSE'].idxmin()]
+  print('Best ARIMA%s MSE=%.9f' % (best_arima['params'], best_arima['MSE']))
+  #print('Best ARIMA%s MSE=%.9f' % (best_cfg, best_score))
+
+
+def get_abs_file_path(output_rel_path):
+  script_path = os.path.abspath(__file__)
+  path = script_path.rpartition('\\src\\')[0]
+
+  abs_file_path = os.path.join(path, output_rel_path)
+  return abs_file_path
 
 
 def print_dataframe_info(df):

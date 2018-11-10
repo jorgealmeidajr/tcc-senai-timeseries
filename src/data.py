@@ -1,7 +1,7 @@
 
+import os
 import pandas as pd
 import numpy as np
-
 
 
 
@@ -9,7 +9,14 @@ import numpy as np
 # Serie Temporal 01
 # cotacao do dolar em relacao ao real - 18 anos
 def load_timeseries01_original():
-  return pd.read_csv('../output/timeseries01.csv', header=0, names=['date', 'rate'])
+  script_path = os.path.abspath(__file__)
+  path = script_path.rpartition('\\src\\')[0]
+
+  rel_path = "output\\timeseries01.csv"
+  abs_file_path = os.path.join(path, rel_path)
+
+  return pd.read_csv(abs_file_path, header=0, names=['date', 'rate'])
+  #return pd.read_csv('../output/timeseries01.csv', header=0, names=['date', 'rate'])
 
 
 def load_timeseries01_daily():
