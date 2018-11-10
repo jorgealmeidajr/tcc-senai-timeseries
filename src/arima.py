@@ -10,6 +10,7 @@ from statsmodels.tsa.arima_model import ARIMA
 from sklearn.metrics import mean_squared_error
 
 
+
 # retorna uma combinacao dos parametros para serem avaliados
 def get_arima_params(p_values, d_values, q_values):
   arima_params = []
@@ -44,9 +45,9 @@ def evaluate_arima_model(train, test, arima_order):
 
   for t in range(len(test)):
     model = ARIMA(history, order=arima_order)
-    model_fit = model.fit(disp=0) # -1, 0
-    
+    model_fit = model.fit(disp=False)    
     output = model_fit.forecast()
+    
     yhat = output[0]
     predictions.append(yhat)
     obs = test[t]
@@ -78,19 +79,19 @@ def evaluate_models(train, test, arima_params, output):
         best_score, best_cfg = mse, params
       
       desempenho.append({'params': params, 'MSE': mse, 'time': execution_time})
-      #print('ARIMA%s MSE=%.9f' % (params, mse))
+      print('ARIMA%s MSE=%.9f' % (params, mse))
 
     except:
       #print("Configuracao instavel: ", str(params), ", Error: ", sys.exc_info()[0])
+      # estou ignorando parametros instaveis
       continue
 
+  # salvar o desempenho do ARIMA
   df_desempenho = pd.DataFrame(desempenho, columns=['params', 'MSE', 'time'])
-  path = get_abs_file_path(output)
-  print(path)
-  #df_desempenho.to_csv(path)
+  df_desempenho.to_csv(get_abs_file_path(output))
 
   best_arima = df_desempenho.loc[df_desempenho['MSE'].idxmin()]
-  print('Best ARIMA%s MSE=%.9f' % (best_arima['params'], best_arima['MSE']))
+  print('Melhores parametros: ARIMA%s MSE=%.9f' % (best_arima['params'], best_arima['MSE']))
   #print('Best ARIMA%s MSE=%.9f' % (best_cfg, best_score))
 
 
