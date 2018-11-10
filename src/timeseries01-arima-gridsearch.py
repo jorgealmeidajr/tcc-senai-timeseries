@@ -6,8 +6,10 @@ import numpy as np
 import arima
 import data
 
-warnings.filterwarnings("ignore")
 
+
+# tamanho dos dados de treinamento do modelo arima
+PORCENTAGEM: float = 0.66
 
 
 def main():
@@ -18,13 +20,33 @@ def main():
   )
 
   print(' > Numero de parametros para o ARIMA: %s' % len(arima_params))
-  #grid_search_ts_daily(arima_params)
-  grid_search_ts_monthly(arima_params)
+  
+  # descomente para executar o grid search na serie diaria
+  grid_search_ts_daily(arima_params)
+
+  # descomente para executar o grid search na serie mensal
+  #grid_search_ts_monthly(arima_params)
 
 
 def grid_search_ts_daily(arima_params):
   print(' > GRID SEARCH na serie DIARIA')
+  
+  # carrego a serie temporal diaria
+  df_daily = data.load_timeseries01_daily()
 
+  # primeira transformacao
+  log_df_daily = np.log(df_daily)
+
+  # segunda transformacao
+  log_df_daily_diff = log_df_daily - log_df_daily.shift()
+  log_df_daily_diff.dropna(inplace=True)
+
+  dataset = log_df_daily.values
+  dataset = dataset.astype('float32')
+
+  train, test = arima.split_dataset(dataset, porcentagem=PORCENTAGEM, debug=False)
+
+  arima.evaluate_models(train, test, arima_params, 'output\\ts01-d-arima.csv')
   print()
 
 
@@ -44,7 +66,7 @@ def grid_search_ts_monthly(arima_params):
   dataset = log_df_monthly.values
   dataset = dataset.astype('float32')
 
-  train, test = arima.split_dataset(dataset, porcentagem=0.66, debug=False)
+  train, test = arima.split_dataset(dataset, porcentagem=PORCENTAGEM, debug=False)
 
   arima.evaluate_models(train, test, arima_params, 'output\\ts01-m-arima.csv')
   print()
@@ -52,4 +74,5 @@ def grid_search_ts_monthly(arima_params):
 
 
 if __name__ == '__main__':
+  warnings.filterwarnings("ignore")
   main()
