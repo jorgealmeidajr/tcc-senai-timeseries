@@ -21,32 +21,32 @@ def main():
 
   print(' > Numero de parametros para o ARIMA: %s' % len(arima_params))
   
-  # [ATENCAO] descomente para executar o grid search na serie diaria
-  grid_search_ts_daily(arima_params)
+  # [ATENCAO] descomente para executar o grid search na serie semanal
+  grid_search_ts_weekly(arima_params)
 
   # [ATENCAO] descomente para executar o grid search na serie mensal
   #grid_search_ts_monthly(arima_params)
 
 
-def grid_search_ts_daily(arima_params):
-  print(' > GRID SEARCH na serie DIARIA')
+def grid_search_ts_weekly(arima_params):
+  print(' > GRID SEARCH na serie SEMANAL')
   
-  # carrego a serie temporal diaria
-  df_daily = data.load_timeseries01_daily()
+  # carrego a serie temporal semanal
+  df_weekly = data.load_timeseries01_weekly()
 
   # primeira transformacao
-  log_df_daily = np.log(df_daily)
+  log_df_weekly = np.log(df_weekly)
 
   # segunda transformacao
-  log_df_daily_diff = log_df_daily - log_df_daily.shift()
-  log_df_daily_diff.dropna(inplace=True)
+  log_df_weekly_diff = log_df_weekly - log_df_weekly.shift()
+  log_df_weekly_diff.dropna(inplace=True)
 
-  dataset = log_df_daily.values
+  dataset = log_df_weekly.values
   dataset = dataset.astype('float32')
 
   train, test = arima.split_dataset(dataset, porcentagem=PORCENTAGEM, debug=False)
 
-  arima.evaluate_models(train, test, arima_params, 'output\\ts01-d-arima.csv')
+  arima.evaluate_models(train, test, arima_params, 'output\\ts01-w-arima.csv')
   print()
 
 
