@@ -45,6 +45,15 @@ def load_timeseries01_daily():
   return df_daily
 
 
+def load_timeseries01_weekly():
+  df_daily = load_timeseries01_daily()
+
+  df_weekly = df_daily.resample('W-FRI')
+  df_weekly = df_weekly.mean()
+
+  return df_weekly
+
+
 def load_timeseries01_monthly():
   df_daily = load_timeseries01_daily()
 
