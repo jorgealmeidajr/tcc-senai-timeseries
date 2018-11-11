@@ -79,10 +79,11 @@ def evaluate_models(train, test, arima_params, output):
         best_score, best_cfg = mse, params
       
       desempenho.append({'params': params, 'MSE': mse, 'time': execution_time})
-      print('ARIMA%s MSE=%.9f' % (params, mse))
+      print('[SUCESSO] ARIMA%s MSE=%.9f' % (params, mse))
 
     except:
       #print("Configuracao instavel: ", str(params), ", Error: ", sys.exc_info()[0])
+      print('[FALHA] A configuracao ARIMA', params, ' falhou')
       # estou ignorando parametros instaveis
       continue
 

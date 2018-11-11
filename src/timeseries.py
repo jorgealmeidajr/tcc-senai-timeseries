@@ -6,6 +6,7 @@ from statsmodels.tsa.stattools import adfuller
 import matplotlib.pyplot as plt
 
 
+
 def check_stationarity(timeseries, window):
     # Determing rolling statistics
     rolling_mean = timeseries.rolling(window=window, center=False).mean() 
@@ -70,24 +71,24 @@ def print_test_results(dfresults):
             continue
 
     if test_statistic > critical_value_1:
-        print('Test Statistic (%f) > Critical Value 1 (%f)' % (test_statistic, critical_value_1))
+        print('[FALHA] Test Statistic (%f) > Critical Value 1 (%f)' % (test_statistic, critical_value_1))
     else:
-        print('Test Statistic (%f) < Critical Value 1 (%f)' % (test_statistic, critical_value_1))
+        print('[SUCESSO] Test Statistic (%f) < Critical Value 1 (%f)' % (test_statistic, critical_value_1))
 
     if test_statistic > critical_value_5:
-        print('Test Statistic (%f) > Critical Value 5 (%f)' % (test_statistic, critical_value_5))
+        print('[FALHA] Test Statistic (%f) > Critical Value 5 (%f)' % (test_statistic, critical_value_5))
     else:
-        print('Test Statistic (%f) < Critical Value 5 (%f)' % (test_statistic, critical_value_5))
+        print('[SUCESSO] Test Statistic (%f) < Critical Value 5 (%f)' % (test_statistic, critical_value_5))
 
     if test_statistic > critical_value_10:
-        print('Test Statistic (%f) > Critical Value 10 (%f)' % (test_statistic, critical_value_10))
+        print('[FALHA] Test Statistic (%f) > Critical Value 10 (%f)' % (test_statistic, critical_value_10))
     else:
-        print('Test Statistic (%f) < Critical Value 10 (%f)' % (test_statistic, critical_value_10))
+        print('[SUCESSO] Test Statistic (%f) < Critical Value 10 (%f)' % (test_statistic, critical_value_10))
 
     if p_value > 0.05:
-        print('p-value (%f) > 0.05' % (p_value))
+        print('[FALHA] p-value (%f) > 0.05' % (p_value))
     else:
-        print('p-value (%f) < 0.05' % (p_value))
+        print('[SUCESSO] p-value (%f) < 0.05' % (p_value))
 
 
 from typing import TypeVar

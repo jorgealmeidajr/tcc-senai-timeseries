@@ -8,7 +8,7 @@ import data
 
 
 
-# tamanho dos dados de treinamento do modelo arima
+# tamanho dos dados de treinamento para o modelo arima
 PORCENTAGEM: float = 0.66
 
 
@@ -21,10 +21,10 @@ def main():
 
   print(' > Numero de parametros para o ARIMA: %s' % len(arima_params))
   
-  # descomente para executar o grid search na serie diaria
+  # [ATENCAO] descomente para executar o grid search na serie diaria
   grid_search_ts_daily(arima_params)
 
-  # descomente para executar o grid search na serie mensal
+  # [ATENCAO] descomente para executar o grid search na serie mensal
   #grid_search_ts_monthly(arima_params)
 
 
