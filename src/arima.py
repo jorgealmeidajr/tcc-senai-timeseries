@@ -63,23 +63,35 @@ def evaluate_arima_model(train, test, arima_order):
 def evaluate_models(train, test, arima_params, output):
   best_score, best_cfg = float("inf"), None
   
-  desempenho = []
+  # tenho que carregar o desempenho salvo num arquivo csv
+  path = get_abs_file_path(output)
+
+  desempenho = pd.read_csv(path) # names=['params', 'MSE']
 
   for params in arima_params:
     try:
+      # verificar se o desempenho ja foi avaliado
+      if len(desempenho.loc[desempenho['params'] == str(params)]) > 0:
+        print('[IGNORADO] ARIMA', params, ' ja foi avaliado')
+        continue
+
       # benchmarking
-      t0= time.clock()
+      #t0= time.clock()
 
       mse = evaluate_arima_model(train, test, params)
 
-      t1 = time.clock() - t0      
-      execution_time = t1 - t0 # CPU seconds elapsed (floating point)
+      #t1 = time.clock() - t0      
+      #execution_time = t1 - t0 # CPU seconds elapsed (floating point)
 
       if mse < best_score:
         best_score, best_cfg = mse, params
       
-      desempenho.append({'params': params, 'MSE': mse, 'time': execution_time})
+      desempenho = desempenho.append({'params': params, 'MSE': mse}, ignore_index=True) # , 'time': execution_time
       print('[SUCESSO] ARIMA%s MSE=%.9f' % (params, mse))
+
+      # salvar o desempenho do ARIMA de maneira incremental
+      desempenho.to_csv(path)
+      return
 
     except:
       #print("Configuracao instavel: ", str(params), ", Error: ", sys.exc_info()[0])
@@ -87,20 +99,16 @@ def evaluate_models(train, test, arima_params, output):
       # estou ignorando parametros instaveis
       continue
 
-  # salvar o desempenho do ARIMA
-  df_desempenho = pd.DataFrame(desempenho, columns=['params', 'MSE', 'time'])
-  df_desempenho.to_csv(get_abs_file_path(output))
-
   best_arima = df_desempenho.loc[df_desempenho['MSE'].idxmin()]
   print('Melhores parametros: ARIMA%s MSE=%.9f' % (best_arima['params'], best_arima['MSE']))
   #print('Best ARIMA%s MSE=%.9f' % (best_cfg, best_score))
 
 
-def get_abs_file_path(output_rel_path):
+def get_abs_file_path(rel_path):
   script_path = os.path.abspath(__file__)
   path = script_path.rpartition('\\src\\')[0]
 
-  abs_file_path = os.path.join(path, output_rel_path)
+  abs_file_path = os.path.join(path, rel_path)
   return abs_file_path
 
 

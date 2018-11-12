@@ -22,10 +22,10 @@ def main():
   print(' > Numero de parametros para o ARIMA: %s' % len(arima_params))
   
   # [ATENCAO] descomente para executar o grid search na serie semanal
-  grid_search_ts_weekly(arima_params)
+  #grid_search_ts_weekly(arima_params)
 
   # [ATENCAO] descomente para executar o grid search na serie mensal
-  #grid_search_ts_monthly(arima_params)
+  grid_search_ts_monthly(arima_params)
 
 
 def grid_search_ts_weekly(arima_params):
