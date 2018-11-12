@@ -1,5 +1,6 @@
 
 import pandas as pd
+import numpy as np
 
 from statsmodels.tsa.stattools import adfuller
 
@@ -106,4 +107,26 @@ def df_has_any_null(df: PandasDataFrame):
         print('[FALHA] Existe valores nao definidos no dataframe')
     else:
         print('[SUCESSO] Todos os valores estao definidos no dataframe')
+
+
+# algoritmo para transformacao de serie temporal para estacionaria
+def ts_transform1(df: PandasDataFrame):
+    transform = {'original': df}
+
+    # Apply a nonlinear log transformation
+    ts_log = np.log(df)
+    transform['ts_log'] = ts_log
+    
+    # Remove trend and seasonality with differencing
+    ts_log_diff = ts_log - ts_log.shift()
+    ts_log_diff.dropna(inplace=True)
+    transform['ts_log_diff'] = ts_log_diff
+    
+    return transform
+
+
+def plot_train_and_test(train: PandasDataFrame, test: PandasDataFrame):
+    plt.plot(train, label='train', color='blue')
+    plt.plot(test, label='test', color='red')
+    plt.legend(loc='upper left')
 
