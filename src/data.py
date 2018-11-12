@@ -54,6 +54,17 @@ def load_timeseries01_weekly():
   return df_weekly
 
 
+def load_timeseries01_monthly2():
+  df_daily = load_timeseries01_daily()
+
+  # transforma numa serie diaria em uma serie com o dia 15 e o fim de cada mes
+  # no final, todo mes vou ter duas amostras
+  df_monthly2 = df_daily.resample('SM')
+  df_monthly2 = df_monthly2.mean()
+
+  return df_monthly2
+
+
 def load_timeseries01_monthly():
   df_daily = load_timeseries01_daily()
 

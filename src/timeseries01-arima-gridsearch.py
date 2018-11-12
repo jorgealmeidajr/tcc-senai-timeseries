@@ -21,32 +21,32 @@ def main():
 
   print(' > Numero de parametros para o ARIMA: %s' % len(arima_params))
   
-  # [ATENCAO] descomente para executar o grid search na serie semanal
-  #grid_search_ts_weekly(arima_params)
+  # [ATENCAO] descomente para executar o grid search na serie mensal com dois valores
+  grid_search_ts_monthly2(arima_params)
 
   # [ATENCAO] descomente para executar o grid search na serie mensal
-  grid_search_ts_monthly(arima_params)
+  #grid_search_ts_monthly(arima_params)
 
 
-def grid_search_ts_weekly(arima_params):
-  print(' > GRID SEARCH na serie SEMANAL')
+def grid_search_ts_monthly2(arima_params):
+  print(' > GRID SEARCH na serie MENSAL com duas amostras')
   
-  # carrego a serie temporal semanal
-  df_weekly = data.load_timeseries01_weekly()
+  # carrego a serie temporal mensal com duas amostras
+  df_monthly2 = data.load_timeseries01_monthly2()
 
   # primeira transformacao
-  log_df_weekly = np.log(df_weekly)
+  log_df_monthly2 = np.log(df_monthly2)
 
   # segunda transformacao
-  log_df_weekly_diff = log_df_weekly - log_df_weekly.shift()
-  log_df_weekly_diff.dropna(inplace=True)
+  log_df_monthly2_diff = log_df_monthly2 - log_df_monthly2.shift()
+  log_df_monthly2_diff.dropna(inplace=True)
 
-  dataset = log_df_weekly.values
+  dataset = log_df_monthly2.values
   dataset = dataset.astype('float32')
 
   train, test = arima.split_dataset(dataset, porcentagem=PORCENTAGEM, debug=False)
 
-  arima.evaluate_models(train, test, arima_params, 'output\\ts01-w-arima.csv')
+  arima.evaluate_models(train, test, arima_params, 'output\\ts01-m2-arima.csv')
   print()
 
 
