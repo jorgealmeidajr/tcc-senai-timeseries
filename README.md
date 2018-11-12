@@ -18,3 +18,8 @@ Curso de graduacao: Analise e Desenvolvimento de Sistemas (SENAI/SC 2018).
   - And this
 
 ## Ferramentas usadas neste projeto
+
+## Trabalhos futuros e melhorias
+
+- implementar um benchmarking no momento do treinamento do modelo ARIMA;
+- fazer o mesmo com redes neurais para compararar o treinamento dos dois modelos;

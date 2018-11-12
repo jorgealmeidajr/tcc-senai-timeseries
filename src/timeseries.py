@@ -100,3 +100,10 @@ def plot_timeserie(df: PandasDataFrame):
     plt.grid(True)
     plt.xlabel('Ano', fontsize=14)
 
+
+def df_has_any_null(df: PandasDataFrame):
+    if df.isnull().values.any():
+        print('[FALHA] Existe valores nao definidos no dataframe')
+    else:
+        print('[SUCESSO] Todos os valores estao definidos no dataframe')
+

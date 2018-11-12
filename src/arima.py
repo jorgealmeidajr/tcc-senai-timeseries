@@ -66,16 +66,18 @@ def evaluate_models(train, test, arima_params, output):
   # tenho que carregar o desempenho salvo num arquivo csv
   path = get_abs_file_path(output)
 
-  desempenho = pd.read_csv(path) # names=['params', 'MSE']
+  df = pd.read_csv(path, names=['params', 'MSE', 'status'], header=0) # 
+  desempenho = df.to_dict('records')
 
   for params in arima_params:
     try:
       # verificar se o desempenho ja foi avaliado
-      if len(desempenho.loc[desempenho['params'] == str(params)]) > 0:
+      if len(df.loc[df['params'] == str(params)]) > 0:
         print('[IGNORADO] ARIMA', params, ' ja foi avaliado')
         continue
 
-      # benchmarking
+      # TODO implementar um benchmarking no momento do treinamento do modelo
+      # fazer o mesmo com redes neurais para comparacao
       #t0= time.clock()
 
       mse = evaluate_arima_model(train, test, params)
@@ -86,17 +88,23 @@ def evaluate_models(train, test, arima_params, output):
       if mse < best_score:
         best_score, best_cfg = mse, params
       
-      desempenho = desempenho.append({'params': params, 'MSE': mse}, ignore_index=True) # , 'time': execution_time
+      desempenho.append({'params': params, 'MSE': mse, 'status': 'SUCESSO'})
+
       print('[SUCESSO] ARIMA%s MSE=%.9f' % (params, mse))
 
       # salvar o desempenho do ARIMA de maneira incremental
-      desempenho.to_csv(path)
-      return
+      df_desempenho = pd.DataFrame(desempenho, columns = ['params', 'MSE', 'status'])
+      df_desempenho.to_csv(path, index=False)
 
     except:
-      #print("Configuracao instavel: ", str(params), ", Error: ", sys.exc_info()[0])
+      # estou ignorando parametros instaveis que produzem erros
       print('[FALHA] A configuracao ARIMA', params, ' falhou')
-      # estou ignorando parametros instaveis
+
+      desempenho.append({'params': params, 'MSE': None, 'status': 'FALHA'})
+
+      # salvar o desempenho do ARIMA de maneira incremental
+      df_desempenho = pd.DataFrame(desempenho, columns = ['params', 'MSE', 'status'])
+      df_desempenho.to_csv(path, index=False)
       continue
 
   best_arima = df_desempenho.loc[df_desempenho['MSE'].idxmin()]
