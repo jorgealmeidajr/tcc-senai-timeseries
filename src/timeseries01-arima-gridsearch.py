@@ -5,20 +5,12 @@ import numpy as np
 
 import arima
 import data
+import constants
 
-
-
-# tamanho dos dados de treinamento para o modelo arima
-PORCENTAGEM: float = 0.66
 
 
 def main():
-  arima_params = arima.get_arima_params(
-    p_values=range(0, 6), 
-    d_values=range(0, 5), 
-    q_values=range(0, 5)
-  )
-
+  arima_params = constants.ARIMA_PARAMS
   print(' > Numero de parametros para o ARIMA: %s' % len(arima_params))
   
   # [ATENCAO] descomente para executar o grid search na serie mensal com dois valores
@@ -44,7 +36,7 @@ def grid_search_ts_monthly2(arima_params):
   dataset = log_df_monthly2.values
   dataset = dataset.astype('float32')
 
-  train, test = arima.split_dataset(dataset, porcentagem=PORCENTAGEM, debug=False)
+  train, test = arima.split_dataset(dataset, porcentagem=constants.PORCENTAGEM, debug=False)
 
   arima.evaluate_models(train, test, arima_params, 'output\\ts01-m2-arima.csv')
   print()
@@ -66,7 +58,7 @@ def grid_search_ts_monthly(arima_params):
   dataset = log_df_monthly.values
   dataset = dataset.astype('float32')
 
-  train, test = arima.split_dataset(dataset, porcentagem=PORCENTAGEM, debug=False)
+  train, test = arima.split_dataset(dataset, porcentagem=constants.PORCENTAGEM, debug=False)
 
   arima.evaluate_models(train, test, arima_params, 'output\\ts01-m-arima.csv')
   print()
