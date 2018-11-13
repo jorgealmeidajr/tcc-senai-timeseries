@@ -9,6 +9,8 @@ import numpy as np
 from statsmodels.tsa.arima_model import ARIMA
 from sklearn.metrics import mean_squared_error
 
+import matplotlib.pyplot as plt
+
 
 
 # retorna uma combinacao dos parametros para serem avaliados
@@ -132,4 +134,38 @@ def print_dataframe_info(df):
   print('#' * 90)
   print('TAIL \n')
   print(str(df.tail(5)))
+
+
+def forecast(train, test, arima_params):
+  predictions = list()
+  historical = list()
+
+  model = ARIMA(train, order=arima_params)
+  model_fit = model.fit(disp=-1)
+  forecast = model_fit.forecast(steps=len(test))[0]
+
+  t = 0
+  for yhat in forecast:
+    observed = np.exp(test['rate'][t])
+    historical.append(observed)
+
+    predicted = np.exp(float(yhat))
+    predictions.append(predicted)
+
+    #print('Predicted = %.9f, Expected = %.9f' % (predicted, observed))
+    t += 1
+  
+  return (historical, predictions)
+
+
+def plot_historical_and_predictions(historical, predictions, test):
+    error = mean_squared_error(historical, predictions)
+    print('Test MSE: %.9f' % error)
+
+    historical = pd.Series(historical, index=test.index)
+    predictions = pd.Series(predictions, index=test.index)
+
+    plt.plot(historical)
+    plt.plot(predictions, color='red')
+    plt.show()
 
