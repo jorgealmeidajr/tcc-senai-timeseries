@@ -68,7 +68,7 @@ def evaluate_models(train, test, arima_params, output):
   # tenho que carregar o desempenho salvo num arquivo csv
   path = get_abs_file_path(output)
 
-  df = pd.read_csv(path, names=['params', 'MSE', 'status'], header=0) # 
+  df = pd.read_csv(path, names=['params', 'MSE', 'status'], header=0)
   desempenho = df.to_dict('records')
 
   for params in arima_params:
@@ -109,6 +109,7 @@ def evaluate_models(train, test, arima_params, output):
       df_desempenho.to_csv(path, index=False)
       continue
 
+  df_desempenho = pd.read_csv(path, names=['params', 'MSE', 'status'], header=0)
   best_arima = df_desempenho.loc[df_desempenho['MSE'].idxmin()]
   print('Melhores parametros: ARIMA%s MSE=%.9f' % (best_arima['params'], best_arima['MSE']))
   #print('Best ARIMA%s MSE=%.9f' % (best_cfg, best_score))
