@@ -9,7 +9,7 @@ import arima
 PORCENTAGEM: float = 0.80
 
 ARIMA_PARAMS = arima.get_arima_params(
-  p_values=range(0, 11), 
+  p_values=range(0, 7), 
   d_values=range(0, 4), 
   q_values=range(0, 4)
 )
