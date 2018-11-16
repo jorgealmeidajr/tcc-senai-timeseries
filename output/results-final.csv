@@ -1,3 +1,7 @@
-model,params,train-MSE,test-MSE,test4-MSE,train-RMSE,test-RMSE,test4-RMSE
-"ARIMA","",,,,,,,
-"MLP","",,,,,,,
+timeseries,model,params,train-MSE,test-MSE
+"ts01-m2","ARIMA","(0, 1, 1)",0.329432806,0.112458929,
+"ts01-m","ARIMA","(0, 1, 1)",0.335878597,0.111434039,
+"ts02-m2","ARIMA","(1, 2, 1)",0.003773001,0.025343319,
+"ts02-m","ARIMA","(0, 2, 0)",0.003718145,0.025639083,
+"ts03-m2","ARIMA","",,
+"ts03-m","ARIMA","",,

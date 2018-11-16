@@ -17,7 +17,7 @@ def main():
   #grid_search_ts_monthly2(arima_params)
 
   # [ATENCAO] descomente para executar o grid search na serie mensal
-  grid_search_ts_monthly(arima_params)
+  #grid_search_ts_monthly(arima_params)
 
 
 def grid_search_ts_monthly2(arima_params):
