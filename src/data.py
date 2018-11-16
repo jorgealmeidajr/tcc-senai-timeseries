@@ -80,7 +80,13 @@ def load_timeseries01_monthly():
 # Serie Temporal 02
 # Cotacao do Fundo de Investimento de Renda Fixa - 7 anos
 def load_timeseries02_original():
-  return pd.read_csv('../data/fundo01-cotas-rendafixa.csv', header=0, encoding='iso-8859-1')
+  script_path = os.path.abspath(__file__)
+  path = script_path.rpartition('\\src\\')[0]
+
+  rel_path = "data\\fundo01-cotas-rendafixa.csv"
+  abs_file_path = os.path.join(path, rel_path)
+
+  return pd.read_csv(abs_file_path, header=0, encoding='iso-8859-1')
 
 
 def load_timeseries02_daily():
@@ -112,6 +118,17 @@ def load_timeseries02_daily():
   df_daily = df_daily['2011-09-27':]
 
   return df_daily
+
+
+def load_timeseries02_monthly2():
+  df_daily = load_timeseries02_daily()
+
+  # transforma numa serie diaria em uma serie com o dia 15 e o fim de cada mes
+  # no final, todo mes vou ter duas amostras
+  df_monthly2 = df_daily.resample('SM')
+  df_monthly2 = df_monthly2.mean()
+
+  return df_monthly2
 
 
 def load_timeseries02_monthly():
