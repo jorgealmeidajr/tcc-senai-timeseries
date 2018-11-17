@@ -136,16 +136,20 @@ def plot_train_and_arima(ts_train: PandasDataFrame, results_ARIMA):
     if len(ts_train) != len(results_ARIMA.fittedvalues):
         raise Exception('Os dois parametros precisam ter o mesmo tamanho')
     
+    print('MSE: %.9f' % mean_squared_error(ts_train.values, results_ARIMA.fittedvalues.values))
+
     plt.plot(ts_train.index.to_pydatetime(), ts_train.values)
     plt.plot(ts_train.index.to_pydatetime(), results_ARIMA.fittedvalues, color='red')
-    plt.title('MSE: %.9f' % mean_squared_error(ts_train.values, results_ARIMA.fittedvalues.values))
+    #plt.title('MSE: %.9f' % mean_squared_error(ts_train.values, results_ARIMA.fittedvalues.values))
 
 
 def plot_train_and_predictions(ts_train: PandasDataFrame, predictions_ARIMA):
     if len(ts_train) != len(predictions_ARIMA.values):
         raise Exception('Os dois parametros precisam ter o mesmo tamanho')
 
+    print('MSE: %.9f' % mean_squared_error(ts_train.values, predictions_ARIMA.values))
+
     plt.plot(ts_train.index.to_pydatetime(), ts_train.values)
     plt.plot(ts_train.index.to_pydatetime(), predictions_ARIMA.values, color='red')
-    plt.title('MSE: %.9f' % mean_squared_error(ts_train.values, predictions_ARIMA.values))
+    #plt.title('MSE: %.9f' % mean_squared_error(ts_train.values, predictions_ARIMA.values))
 

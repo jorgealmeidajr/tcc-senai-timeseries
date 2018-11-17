@@ -161,7 +161,7 @@ def forecast(train, test, arima_params):
 
 def plot_historical_and_predictions(historical, predictions, test):
     error = mean_squared_error(historical, predictions)
-    print('Test MSE: %.9f' % error)
+    print('MSE: %.9f' % error)
 
     historical = pd.Series(historical, index=test.index)
     predictions = pd.Series(predictions, index=test.index)
