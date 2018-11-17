@@ -37,7 +37,77 @@ def evaluate_mlp_models(train: List, test: List):
   cfg_list = constants.get_mlp_model_configs()
 
   # grid search
-  #scores = grid_search(train, test, cfg_list)
+  scores = grid_search(train, test, cfg_list)
+
+
+# grid search configs
+def grid_search(train: List, test: List, cfg_list):
+  # evaluate configs
+  scores = [repeat_evaluate(train, test, cfg) for cfg in cfg_list]
+  
+  # sort configs by error, asc
+  scores.sort(key=lambda tup: tup[1])
+  return scores
+
+
+# score a model, return None on failure
+def repeat_evaluate(train: List, test: List, config, n_repeats=10):
+  # convert config to a key
+  key = str(config)
+
+  # fit and evaluate the model n times
+  scores = [walk_forward_validation(train, test, config) for _ in range(n_repeats)]
+
+  # summarize score
+  result = np.mean(scores)
+  print('> Model[%s] %.3f' % (key, result))
+  return (key, result)
+
+
+# walk-forward validation for univariate data
+def walk_forward_validation(train: List, test: List, cfg):
+  predictions = list()
+
+  # fit model
+  model = model_fit(train, cfg)
+
+  # seed history with training dataset
+  history = [x for x in train]
+
+  # step over each time-step in the test set
+  for i in range(len(test)):
+    # fit model and make forecast for history
+    yhat = model_predict(model, history, cfg)
+    # store forecast in list of predictions
+    predictions.append(yhat)
+    # add actual observation to history for the next loop
+    history.append(test[i])
+
+  # estimate prediction error
+  #error = measure_rmse(test, predictions)
+  error = measure_mse(test, predictions)
+
+  print('MSE: %.9f' % error)
+
+  raise Exception('stop')
+
+  return error
+
+
+# forecast with the fit model
+def model_predict(model, history, config):
+  # unpack config
+  n_input, _, _, _, _ = config
+
+  # prepare data
+  correction = 0.0
+  
+  # shape input for model
+  x_input = np.array(history[-n_input:]).reshape((1, n_input))
+  # make forecast
+  yhat = model.predict(x_input, verbose=0)
+  # correct forecast if it was differenced
+  return correction + yhat[0]
 
 
 # transform list into supervised learning format
@@ -73,73 +143,32 @@ def measure_mse(actual, predicted):
 
 # fit a model
 def model_fit(train, config):
-	# unpack config
-	n_input, n_nodes, n_epochs, n_batch, n_diff = config
-	
+  # unpack config
+  n_input, n_nodes, n_epochs, n_batch, n_layers = config
+
+  config_dict = {
+    'n_input': n_input, 'n_nodes': n_nodes, 'n_epochs': n_epochs,
+    'n_batch': n_batch, 'n_layers': n_layers
+  }
+
+  print(config_dict)
+
   # transform series into supervised format
-	data = series_to_supervised(train, n_in=n_input)
-	
+  data = series_to_supervised(train, n_in=n_input)
+
   # separate inputs and outputs
-	train_x, train_y = data[:, :-1], data[:, -1]
-	
+  train_x, train_y = data[:, :-1], data[:, -1]
+
   # define model
-	model = tf.keras.models.Sequential()
-	model.add(tf.keras.layers.Dense(n_nodes, activation='relu', input_dim=n_input))
-	model.add(tf.keras.layers.Dense(1))
-	model.compile(loss='mse', optimizer='adam')
-	
-  # fit model
-	model.fit(train_x, train_y, epochs=n_epochs, batch_size=n_batch, verbose=0)
-	return model
+  model = tf.keras.models.Sequential()
+  model.add(tf.keras.layers.Dense(n_nodes, activation='relu', input_dim=n_input))
 
+  # TODO falta colocar as camadas ocultas
 
-# walk-forward validation for univariate data
-def walk_forward_validation(train: List, test: List, cfg):
-  predictions = list()
+  model.add(tf.keras.layers.Dense(1))
+  model.compile(loss='mse', optimizer='adam')
 
   # fit model
-  model = model_fit(train, cfg)
-
-  # seed history with training dataset
-  history = [x for x in train]
-
-  # step over each time-step in the test set
-  for i in range(len(test)):
-    # fit model and make forecast for history
-    yhat = model_predict(model, history, cfg)
-    # store forecast in list of predictions
-    predictions.append(yhat)
-    # add actual observation to history for the next loop
-    history.append(test[i])
-
-  # estimate prediction error
-  #error = measure_rmse(test, predictions)
-  error = measure_mse(test, predictions)
-
-  print('MSE: %.9f' % error)
-  return error
-
-
-# score a model, return None on failure
-def repeat_evaluate(train: List, test: List, config, n_repeats=10):
-  # convert config to a key
-  key = str(config)
-
-  # fit and evaluate the model n times
-  scores = [walk_forward_validation(train, test, config) for _ in range(n_repeats)]
-
-  # summarize score
-  result = mean(scores)
-  print('> Model[%s] %.3f' % (key, result))
-  return (key, result)
-
-
-# grid search configs
-def grid_search(train: List, test: List, cfg_list):
-  # evaluate configs
-  scores = [repeat_evaluate(train, test, cfg) for cfg in cfg_list]
-  
-  # sort configs by error, asc
-  scores.sort(key=lambda tup: tup[1])
-  return scores
+  model.fit(train_x, train_y, epochs=n_epochs, batch_size=n_batch, verbose=0)
+  return model
 
