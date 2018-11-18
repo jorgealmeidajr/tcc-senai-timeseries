@@ -9,7 +9,8 @@ import mlp
 
 
 
-#OUTPUT_M: str = 'output\\ts01-m-mlp.csv'
+OUTPUT_M: str = 'output\\ts01\\ts01-m-mlp.csv'
+OUTPUT_M2: str = 'output\\ts01\\ts01-m2-mlp.csv'
 
 # carrego a serie temporal mensal com duas amostras
 df_monthly2 = data.load_timeseries01_monthly2()
@@ -19,7 +20,7 @@ df_monthly = data.load_timeseries01_monthly()
 
 
 def main():
-  print('\nGRID SEARCH na serie TS01 - busca pela melhor REDE NEURAL')
+  print('\nMLP: Serie Temporal TS01 - busca pela melhor REDE NEURAL')
 
   #arima_params = constants.ARIMA_PARAMS
   #print(' > Numero de parametros para o ARIMA: %s' % len(arima_params))
@@ -32,7 +33,7 @@ def main():
 
 
 def grid_search_ts_monthly2():
-  print(' > GRID SEARCH na serie MENSAL com duas amostras')
+  print(' > MLP: Grid Search na serie MENSAL com duas amostras')
   
   dataset = df_monthly2.values
   dataset = dataset.astype('float32')
@@ -44,11 +45,10 @@ def grid_search_ts_monthly2():
 
 
 def grid_search_ts_monthly():
-  print('> GRID SEARCH na serie MENSAL')
-
+  print('> MLP: Grid Search na serie MENSAL')
   train, test = mlp.split_to_train_test(df_monthly, porcentagem=constants.PORCENTAGEM, debug=True)
-  mlp.evaluate_mlp_models(train, test)
-  
+
+  mlp.evaluate_mlp_models(train, test, OUTPUT_M)
   print()
 
 
@@ -56,4 +56,3 @@ def grid_search_ts_monthly():
 if __name__ == '__main__':
   warnings.filterwarnings("ignore")
   main()
-

@@ -21,5 +21,8 @@ Curso de graduacao: Analise e Desenvolvimento de Sistemas (SENAI/SC 2018).
 
 ## Trabalhos futuros e melhorias
 
+- refatorar os codigos do projeto usando os paradigmas da orientacao a objetos e da programacao funcional (hoje o codigo esta muito estruturado e no formato de scripts);
 - implementar um benchmarking no momento do treinamento do modelo ARIMA;
 - fazer o mesmo com redes neurais para compararar o treinamento dos dois modelos;
+- implementar o grid search para o modelo ARIMA usando multiplas threads (hoje o codigo esta usando apenas um core da cpu, mas poderia dividir o trabalho em multiplos cores);
+- fazer o mesmo no grid search para o modelo de redes neurais;

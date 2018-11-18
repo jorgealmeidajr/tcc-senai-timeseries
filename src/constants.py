@@ -18,10 +18,10 @@ ARIMA_PARAMS = arima.get_arima_params(
 def get_mlp_model_configs():
   # define scope of configs
   n_input = [12]
-  n_nodes = [5, 10] # , 25, 50, 100]
-  n_epochs = [50, 100] # , 500, 1000, 2000]
-  n_batch = [1, 10, 25] # , 50, 100, 150]
-  n_layers = [2] # , 4, 8]
+  n_nodes = [5, 10, 25]
+  n_epochs = [50, 100, 200, 500, 1000]
+  n_batch = [5, 10, 50, 100, 150, 200]
+  n_layers = [2, 4, 8, 10]
 
 	# create configs
   configs = list()
