@@ -20,27 +20,20 @@ df_monthly = data.load_timeseries01_monthly()
 
 
 def main():
-  print('\nMLP: Serie Temporal TS01 - busca pela melhor REDE NEURAL')
-
-  #arima_params = constants.ARIMA_PARAMS
-  #print(' > Numero de parametros para o ARIMA: %s' % len(arima_params))
+  print('\nMLP: Busca pela melhor REDE NEURAL - Serie Temporal TS01')
   
   # [ATENCAO] descomente para executar o grid search na serie mensal com dois valores
-  #grid_search_ts_monthly2(arima_params)
+  #grid_search_ts_monthly2()
 
   # [ATENCAO] descomente para executar o grid search na serie mensal
-  grid_search_ts_monthly()
+  #grid_search_ts_monthly()
 
 
 def grid_search_ts_monthly2():
   print(' > MLP: Grid Search na serie MENSAL com duas amostras')
-  
-  dataset = df_monthly2.values
-  dataset = dataset.astype('float32')
+  train, test = mlp.split_to_train_test(df_monthly2, porcentagem=constants.PORCENTAGEM, debug=True)
 
-  #train, test = arima.split_dataset(dataset, porcentagem=constants.PORCENTAGEM, debug=True)
-
-  #arima.evaluate_models(train, test, arima_params, OUTPUT_M2)
+  mlp.evaluate_mlp_models(train, test, OUTPUT_M2)
   print()
 
 
