@@ -9,18 +9,18 @@ import mlp
 
 
 
-OUTPUT_M: str = 'output\\ts01\\ts01-m-mlp.csv'
-OUTPUT_M2: str = 'output\\ts01\\ts01-m2-mlp.csv'
+OUTPUT_M: str = 'output\\ts02\\ts02-m-mlp.csv'
+OUTPUT_M2: str = 'output\\ts02\\ts02-m2-mlp.csv'
 
 # carrego a serie temporal mensal com duas amostras
-df_monthly2 = data.load_timeseries01_monthly2()
+df_monthly2 = data.load_timeseries02_monthly2()
 
 # carrego a serie temporal mensal
-df_monthly = data.load_timeseries01_monthly()
+df_monthly = data.load_timeseries02_monthly()
 
 
 def main():
-  print('\nMLP: Busca pela melhor REDE NEURAL - Serie Temporal TS01')
+  print('\nMLP: Busca pela melhor REDE NEURAL - Serie Temporal TS02')
   #grid_search_ts_monthly2()
   #grid_search_ts_monthly()
 
