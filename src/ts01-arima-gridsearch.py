@@ -12,11 +12,7 @@ import constants
 def main():
   arima_params = constants.ARIMA_PARAMS
   print(' > Numero de parametros para o ARIMA: %s' % len(arima_params))
-  
-  # [ATENCAO] descomente para executar o grid search na serie mensal com dois valores
   #grid_search_ts_monthly2(arima_params)
-
-  # [ATENCAO] descomente para executar o grid search na serie mensal
   #grid_search_ts_monthly(arima_params)
 
 
@@ -38,7 +34,7 @@ def grid_search_ts_monthly2(arima_params):
 
   train, test = arima.split_dataset(dataset, porcentagem=constants.PORCENTAGEM, debug=False)
 
-  arima.evaluate_models(train, test, arima_params, 'output\\ts01-m2-arima.csv')
+  arima.evaluate_models(train, test, arima_params, 'output\\ts01\\ts01-m2-arima.csv')
   print()
 
 
@@ -60,7 +56,7 @@ def grid_search_ts_monthly(arima_params):
 
   train, test = arima.split_dataset(dataset, porcentagem=constants.PORCENTAGEM, debug=False)
 
-  arima.evaluate_models(train, test, arima_params, 'output\\ts01-m-arima.csv')
+  arima.evaluate_models(train, test, arima_params, 'output\\ts01\\ts01-m-arima.csv')
   print()
 
 
