@@ -9,18 +9,14 @@ import constants
 
 
 
-OUTPUT_M2: str = 'output\\ts03-m2-arima.csv'
-OUTPUT_M: str = 'output\\ts03-m-arima.csv'
+OUTPUT_M2: str = 'output\\ts03\\ts03-m2-arima.csv'
+OUTPUT_M: str = 'output\\ts03\\ts03-m-arima.csv'
 
 
 def main():
   arima_params = constants.ARIMA_PARAMS
   print(' > Numero de parametros para o ARIMA: %s' % len(arima_params))
-  
-  # [ATENCAO] descomente para executar o grid search na serie mensal com dois valores
   #grid_search_ts_monthly2(arima_params)
-
-  # [ATENCAO] descomente para executar o grid search na serie mensal
   grid_search_ts_monthly(arima_params)
 
 
