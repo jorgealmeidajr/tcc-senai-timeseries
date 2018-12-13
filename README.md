@@ -27,6 +27,10 @@ Curso de graduacao: Analise e Desenvolvimento de Sistemas (SENAI/SC 2018).
 - implementar o grid search para o modelo ARIMA usando multiplas threads (hoje o codigo esta usando apenas um core da cpu, mas poderia dividir o trabalho em multiplos cores);
 - fazer o mesmo no grid search para o modelo de redes neurais;
 
-### CC0 1.0 Universal - Creative Commons
+## Informações sobre a Licensa
+
+CC0 1.0 Universal - Creative Commons
+
 Dedicação ao Domínio Público
+
 Copyright (c) 2018 Jorge Almeida Junior
